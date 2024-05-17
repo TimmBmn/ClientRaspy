@@ -1,0 +1,8 @@
+{
+	"room": "111",
+	"brokerIP": "127.0.0.1",
+	"intervalTime": 5,
+	"tempLimit": 30,
+    "ownIP": "127.0.0.1",
+    "sensorID": "28-3c01f095549a"
+}

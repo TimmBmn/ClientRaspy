@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import time
 import json
+import random
 from ServerRaumHTTPHandler import ServerRaumHTTPHandler
 
 
@@ -17,14 +18,14 @@ except:
 
 def getWaterValue():
     if not ISRASPI:
-        return 1
+        return random.random() > 0.5
 
     rain = gpio.input(pin)
     return rain
 
 def getTempValue(id):
     if not ISRASPI:
-        return 30
+        return random.randint(0, 40) * random.random()
 
     path = f"/sys/bus/w1/devices/{id}/w1_slave"
     fin = open(path, "r")
@@ -47,6 +48,7 @@ def run(client: mqtt.Client, room: int, interval:int, tempLimit: float, sensorID
                 tempLimit)
 
         client.publish("sensorclient/data", json.dumps(data))
+        print("Data send: " + str(data))
 
         time.sleep(interval)
 
@@ -66,8 +68,7 @@ def main():
         room: int = data["room"]
         brokerIP: str = data["brokerIP"]
         interval: int = data["intervalTime"]
-        tempLimit: float = data["tempLimit"]
-        ownIP: str = data["ownIP"]
+        tempLimit: int = data["tempLimit"]
         sensorID: str = data["sensorID"]
     except KeyError:
         print("config.json configured wrong")
@@ -86,7 +87,7 @@ def main():
     client.loop_start()
     
 
-    ServerRaumHTTPHandler.run(ownIP, 1111)
+    ServerRaumHTTPHandler.run("127.0.0.1", 1111)
     ServerRaumHTTPHandler.room = room
     ServerRaumHTTPHandler.tlimit = tempLimit 
 

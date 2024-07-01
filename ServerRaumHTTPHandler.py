@@ -65,8 +65,8 @@ class ServerRaumHTTPHandler(BaseHTTPRequestHandler):
             self.send_header("Content-type", "application/json")
             self.end_headers()
             
-            data = json.dumps(
-                    {   "room"  : str(ServerRaumHTTPHandler.room),
+            data = json.dumps({
+                        "room"  : str(ServerRaumHTTPHandler.room),
                         "temp"  : ServerRaumHTTPHandler.temp,
                         "water" : ServerRaumHTTPHandler.water,
                         "tlimit": ServerRaumHTTPHandler.tlimit
@@ -76,10 +76,9 @@ class ServerRaumHTTPHandler(BaseHTTPRequestHandler):
 
     # run ist statisch!!
     @staticmethod
-    def run(hostName, serverPort):
+    def run(serverPort, hostName="127.0.0.1"):
         webserver = HTTPServer((hostName, serverPort), ServerRaumHTTPHandler)
-        t = threading.Thread(target=webserver.serve_forever, daemon=True)
-        t.start()
+        threading.Thread(target=webserver.serve_forever, daemon=True).start()
         print("Webserver started http://%s:%s" % (hostName, serverPort))
 
 

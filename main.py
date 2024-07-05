@@ -6,7 +6,6 @@ import json
 import random
 from ServerRaumHTTPHandler import ServerRaumHTTPHandler
 
-
 try:
     import RPi.GPIO as gpio
     gpio.setmode(gpio.BCM)
@@ -58,9 +57,8 @@ def run(client: mqtt.Client, room: int, interval:int, tempLimit: float, sensorID
         ServerRaumHTTPHandler.water = getWaterValue()
 
 
-def main():
+def main(room, start_server=True):
     load_dotenv()
-    room = os.getenv("ROOM")
     broker_ip = os.getenv("BROKER_IP")
     interval = os.getenv("INTERVAL_TIME")
     temp_limit = os.getenv("TEMP_LIMIT")
@@ -88,12 +86,16 @@ def main():
     client.loop_start()
     
 
-    ServerRaumHTTPHandler.run(1111)
-    ServerRaumHTTPHandler.room = room
-    ServerRaumHTTPHandler.tlimit = temp_limit 
+    if start_server:
+        ServerRaumHTTPHandler.run(1111)
+        ServerRaumHTTPHandler.room = room
+        ServerRaumHTTPHandler.tlimit = temp_limit 
 
     run(client, room, interval, temp_limit, sensor_id)
 
 
 if __name__ == '__main__':
-    main()
+    load_dotenv()
+    room = os.getenv("ROOM")
+
+    main(room)
